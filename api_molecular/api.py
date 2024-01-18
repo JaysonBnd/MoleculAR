@@ -39,14 +39,33 @@ def get_molecule(mole):
             data = json.load(f)
             return jsonify(get_information(data))
 
-@app.route("/api/atom/jmol/", methods=["GET"])
-def get_jmol_list():
-    molecule_file = f"{os.path.join(APPLICATION_PATH, 'atom')}.json"
-    if os.path.exists(molecule_file):
-        with open(molecule_file) as f:
+
+@app.route("/api/atom/jmol/color", methods=["GET"])
+def get_jmol_color_list():
+    jmol_color_file = f"{os.path.join(APPLICATION_PATH, 'atom_color')}.json"
+    if os.path.exists(jmol_color_file):
+        with open(jmol_color_file) as f:
             data = json.load(f)
             return jsonify((data))
-        
+
+
+@app.route("/api/atom/jmol/scale", methods=["GET"])
+def get_jmol_scale_list():
+    jmol_scale_file = f"{os.path.join(APPLICATION_PATH, 'atom_size')}.json"
+    if os.path.exists(jmol_scale_file):
+        with open(jmol_scale_file) as f:
+            data = json.load(f)
+            return jsonify((data))
+
+
+@app.route("/api/atom", methods=["GET"])
+def get_atom():
+    atom_file = f"{os.path.join(APPLICATION_PATH, 'atom')}.json"
+    if os.path.exists(atom_file):
+        with open(atom_file) as f:
+            data = json.load(f)
+            return jsonify((data))
+
 
 if __name__ == "__main__":
     app.run(debug=True)

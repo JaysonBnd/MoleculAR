@@ -271,7 +271,7 @@ GameObject:
   - component: {fileID: 214028255}
   - component: {fileID: 214028254}
   m_Layer: 0
-  m_Name: MoleculFactory
+  m_Name: MoleculeFactory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -289,8 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f57d2c2594fd4e94f9868bab9f57e91e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  atomData: {fileID: 11400000, guid: 00b5fc18703da08478de561502138dbf, type: 2}
-  urlToGet: http://localhost:5000/api/molecular/water
+  urlToGet: http://localhost:5000/api/molecular/fatty_acids/arachidonic_acid
   lineRenderer: {fileID: 2808172965330075553, guid: 53d073b2265cf1b4793226591b6651f6,
     type: 3}
 --- !u!4 &214028255

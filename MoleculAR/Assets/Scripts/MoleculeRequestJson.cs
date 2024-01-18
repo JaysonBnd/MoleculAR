@@ -1,5 +1,5 @@
 [System.Serializable]
-public class BondsConnnectionsJson
+public class BondsConnectionsJson
 {
     public int[] index;
 }
@@ -7,7 +7,7 @@ public class BondsConnnectionsJson
 [System.Serializable]
 public class BondsJson
 {
-    public BondsConnnectionsJson connections;
+    public BondsConnectionsJson connections;
     public int[] order;
 }
 
