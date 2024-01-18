@@ -1,0 +1,8 @@
+{
+  "author": "Geoffrey Hutchison",
+  "version": 1.0,
+  "name": "molecules",
+  "url": "https://github.com/openchemistry/molecules",
+  "description": "Set of over 300 common molecules.",
+  "type": "data"
+}
