@@ -1,3 +1,5 @@
+import base64
+from email.mime import image
 from typing import Any
 from flask import Flask, jsonify
 from flask_restful import Resource, Api
@@ -19,9 +21,9 @@ def get_information(molecule_json: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-@app.route("/api/molecular/<name>/<mole>", methods=["GET"])
-def get_complexe_molecule(name, mole):
-    sub_molecule_dir = os.path.join(MOL_DIR, name)
+@app.route("/api/molecule/<family>/<mole>", methods=["GET"])
+def get_molecule_data(family, mole):
+    sub_molecule_dir = os.path.join(MOL_DIR, family)
     molecule_file = f"{os.path.join(sub_molecule_dir, mole)}.cjson"
 
     if os.path.exists(molecule_file):
@@ -30,14 +32,44 @@ def get_complexe_molecule(name, mole):
             return jsonify(get_information(data))
 
 
-@app.route("/api/molecular/<mole>", methods=["GET"])
-def get_molecule(mole):
-    molecule_file = f"{os.path.join(MOL_DIR, mole)}.cjson"
+@app.route("/api/molecule/<family>/", methods=["GET"])
+def get_family_data(family):
+    molecule_dict: dict[str, Any] = {"molecules": []}
+    dir_path = os.path.join(MOL_DIR, family)
 
-    if os.path.exists(molecule_file):
-        with open(molecule_file) as f:
-            data = json.load(f)
-            return jsonify(get_information(data))
+    files_list = os.listdir(dir_path)
+    for file in files_list:
+        url_path = os.path.splitext(file)[0]
+        file_name = url_path.title().replace("_", ",")
+
+        if file_name not in molecule_dict["molecules"]:
+            with open(f"{os.path.join(dir_path, url_path)}.png", "r+b") as image_file:
+                encoded_image = base64.b64encode(image_file.read())
+
+            molecule_dict["molecules"].append(
+                {
+                    "path": url_path,
+                    "name": file_name,
+                    "image": encoded_image.decode("utf-8"),
+                }
+            )
+
+    return jsonify(molecule_dict)
+
+
+@app.route("/api/molecule/", methods=["GET"])
+def get_all_molecules():
+    families_dict: dict[str, Any] = {"families": []}
+    dirs_list = os.listdir(MOL_DIR)
+    for dir in dirs_list:
+        dir_path = os.path.join(MOL_DIR, dir)
+
+        if os.path.isdir(dir_path):
+            family_name = dir.capitalize()
+
+            families_dict["families"].append({"path": dir, "name": family_name})
+
+    return jsonify(families_dict)
 
 
 @app.route("/api/atom/jmol/color", methods=["GET"])
@@ -68,4 +100,4 @@ def get_atom():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True)
