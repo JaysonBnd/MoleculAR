@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f57d2c2594fd4e94f9868bab9f57e91e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  urlToGet: http://localhost:5000/api/molecular/fatty_acids/arachidonic_acid
+  urlToGet: http://localhost:5000/api/molecule/fatty_acids/arachidonic_acid
   lineRenderer: {fileID: 2808172965330075553, guid: 53d073b2265cf1b4793226591b6651f6,
     type: 3}
 --- !u!4 &214028255

@@ -1,10 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 using UnityEngine.Networking;
 using static UnityEngine.Rendering.DebugUI;
-
 
 public class MoleculeFactory : MonoBehaviour
 {
@@ -109,8 +109,22 @@ public class MoleculeFactory : MonoBehaviour
         }
         return molecule;
     }
+
+    string GetIP()
+    {
+        String strHostName = System.Net.Dns.GetHostName();
+
+        IPHostEntry ipEntry = System.Net.Dns.GetHostEntry(strHostName);
+
+        IPAddress[] addr = ipEntry.AddressList;
+
+        return addr[^1].ToString();
+    }
+
     IEnumerator MoleculeGetRequest()
     {
+        //uri_molecule = $"{this.GetIP()}"
+        Debug.Log(this.GetIP());
         using (UnityWebRequest webRequest = UnityWebRequest.Get(this.urlToGet))
         {
             // Request and wait for the desired page.
