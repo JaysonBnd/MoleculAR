@@ -39,6 +39,14 @@ def get_molecule(mole):
             data = json.load(f)
             return jsonify(get_information(data))
 
+@app.route("/api/atom/jmol/", methods=["GET"])
+def get_jmol_list():
+    molecule_file = f"{os.path.join(APPLICATION_PATH, 'atom')}.json"
+    if os.path.exists(molecule_file):
+        with open(molecule_file) as f:
+            data = json.load(f)
+            return jsonify((data))
+        
 
 if __name__ == "__main__":
     app.run(debug=True)
