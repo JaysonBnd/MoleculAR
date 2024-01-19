@@ -10,25 +10,30 @@ public class MoleculeFactory : MonoBehaviour
 {
     // Start is called before the first frame update
     private List<GameObject> objectAtomsList;
-    private List<Tuple<LineRenderer, LineRenderer>> objectBondsList;
+    private BondManager bondsManager;
     private string uriAtom;
+
+    private float lastScale;
 
     private List<AtomItem> atomList;
     public string urlToGet;
 
-    public LineRenderer lineRenderer;
+    public BondManager bondPrefab;
 
     void Start()
     {
 
 
         this.objectAtomsList = new List<GameObject>();
-        this.objectBondsList = new List<Tuple<LineRenderer, LineRenderer>>();
+        this.bondsManager = GameObject.Instantiate(this.bondPrefab, this.transform);
+        this.bondsManager.InitializeBond();
         this.uriAtom = "http://localhost:5000/api/atom";
 
         this.atomList = new List<AtomItem>();
         // A correct website page.
         StartCoroutine(this.AtomGetRequest());
+
+        this.lastScale = (this.transform.localScale.x + this.transform.localScale.y + this.transform.localScale.z) / 3;
     }
 
     List<AtomItem> JsonToAtomsItem(string json_string)
@@ -176,27 +181,14 @@ public class MoleculeFactory : MonoBehaviour
         for (int i = 0; i < molecule.bondsList.Count; i++)
         {
             var bond = molecule.bondsList[i];
-            LineRenderer firstBondLine = LineRenderer.Instantiate(lineRenderer, this.transform);
-            LineRenderer secondBondLine = LineRenderer.Instantiate(lineRenderer, this.transform);
+
+            var startPos = this.objectAtomsList[bond.first].transform.position;
+            var endPos = this.objectAtomsList[bond.second].transform.position;
 
             Color firstColor = this.atomList[molecule.atomsList[bond.first].atomNumber - 1].Color;
             Color secondColor = this.atomList[molecule.atomsList[bond.second].atomNumber - 1].Color;
-            var midPoint = (this.objectAtomsList[bond.first].transform.position + this.objectAtomsList[bond.second].transform.position) / 2;
 
-            firstBondLine.startColor = firstColor;
-            firstBondLine.endColor = firstColor;
-            firstBondLine.SetPosition(0, this.objectAtomsList[bond.first].transform.position);
-            firstBondLine.SetPosition(1, midPoint);
-
-            Debug.Log(firstColor);
-            Debug.Log(secondColor);
-            secondBondLine.startColor = secondColor;
-            secondBondLine.endColor = secondColor;
-            secondBondLine.SetPosition(0, midPoint);
-            secondBondLine.SetPosition(1, this.objectAtomsList[bond.second].transform.position);
-
-            Tuple<LineRenderer, LineRenderer> bondLineTuple = new Tuple<LineRenderer, LineRenderer>(firstBondLine, secondBondLine);
-            this.objectBondsList.Add(bondLineTuple);
+            this.bondsManager.AddBond(startPos, endPos, firstColor, secondColor);
         }
     }
 
@@ -204,6 +196,13 @@ public class MoleculeFactory : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float newScale = (this.transform.localScale.x + this.transform.localScale.y + this.transform.localScale.z) / 3;
+        if (this.lastScale != (this.transform.localScale.x + this.transform.localScale.y + this.transform.localScale.z) / 3)
+        {
+            this.lastScale = newScale;
 
+            this.bondsManager.UpdateBondWidthMultiplier(this.lastScale);
+
+        }
     }
 }
