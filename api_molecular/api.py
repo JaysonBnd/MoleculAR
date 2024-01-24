@@ -99,5 +99,28 @@ def get_atom():
             return jsonify((data))
 
 
+@app.route("/api/test", methods=["GET"])
+def test():
+    atom_file = f"{os.path.join(APPLICATION_PATH, 'atom')}.json"
+    if os.path.exists(atom_file):
+        with open(atom_file) as f:
+            data = {
+                "bonds": {
+                    "connections": {"index": [0, 1]},
+                    "order": [3],
+                },
+                "coords": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0,
+                    1.0,
+                    0.0,
+                ],
+                "elements": [1, 1],
+            }
+            return jsonify((data))
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True)

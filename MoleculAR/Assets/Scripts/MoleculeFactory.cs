@@ -9,7 +9,7 @@ using static UnityEngine.Rendering.DebugUI;
 public class MoleculeFactory : MonoBehaviour
 {
     // Start is called before the first frame update
-    private List<GameObject> objectAtomsList;
+    private List<AtomObject> objectAtomsList;
     private BondManager bondsManager;
     private string uriAtom;
 
@@ -19,12 +19,13 @@ public class MoleculeFactory : MonoBehaviour
     public string urlToGet;
 
     public BondManager bondPrefab;
+    public AtomObject atomPrefab;
 
     void Start()
     {
 
 
-        this.objectAtomsList = new List<GameObject>();
+        this.objectAtomsList = new List<AtomObject>();
         this.bondsManager = GameObject.Instantiate(this.bondPrefab, this.transform);
         this.bondsManager.InitializeBond();
         this.uriAtom = "http://localhost:5000/api/atom";
@@ -48,7 +49,7 @@ public class MoleculeFactory : MonoBehaviour
             atom.AtomicNumber = atom_json.AtomicNumber;
             atom.Symbol = atom_json.Symbol;
             atom.Scale = atom_json.Scale;
-            atom.Color = new Color(atom_json.R / 255, atom_json.G / 255, atom_json.B / 255, atom_json.A / 255);
+            atom.Color = new Color((float)atom_json.R / 255, (float)atom_json.G / 255, (float)atom_json.B / 255, (float)atom_json.A / 255);
 
 
             atomList.Add(atom);
@@ -77,7 +78,7 @@ public class MoleculeFactory : MonoBehaviour
                     Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     this.atomList = this.JsonToAtomsItem(webRequest.downloadHandler.text);
 
                     // A correct website page.
@@ -85,7 +86,6 @@ public class MoleculeFactory : MonoBehaviour
                     break;
             }
         }
-        Debug.Log("Ended");
     }
 
     MoleculeItem JsonToMoleculeItem(string json_string)
@@ -95,9 +95,11 @@ public class MoleculeFactory : MonoBehaviour
 
         for (int i = 0; i < json_result.elements.Length; i++)
         {
-            var atom = new MoleculeAtom();
-            atom.atomNumber = json_result.elements[i];
-            atom.position = new Vector3(json_result.coords[i * 3], json_result.coords[(i * 3) + 1], json_result.coords[(i * 3) + 2]);
+            var atom = new MoleculeAtom
+            {
+                atomNumber = json_result.elements[i],
+                position = new Vector3(json_result.coords[i * 3], json_result.coords[(i * 3) + 1], json_result.coords[(i * 3) + 2])
+            };
 
             molecule.atomsList.Add(atom);
         }
@@ -106,30 +108,22 @@ public class MoleculeFactory : MonoBehaviour
         {
             int first = json_result.bonds.connections.index[i * 2];
             int second = json_result.bonds.connections.index[(i * 2) + 1];
+            int order = json_result.bonds.order[i];
+            var bond = new MoleculeBond()
+            {
+                first = first,
+                second = second,
+                order = order
+            };
 
-            var bond = new MoleculeBond();
-            bond.first = first;
-            bond.second = second;
             molecule.bondsList.Add(bond);
         }
         return molecule;
     }
 
-    string GetIP()
-    {
-        String strHostName = System.Net.Dns.GetHostName();
-
-        IPHostEntry ipEntry = System.Net.Dns.GetHostEntry(strHostName);
-
-        IPAddress[] addr = ipEntry.AddressList;
-
-        return addr[^1].ToString();
-    }
-
     IEnumerator MoleculeGetRequest()
     {
-        //uri_molecule = $"{this.GetIP()}"
-        Debug.Log(this.GetIP());
+        //uri_molecule = $"{this.GetIP()}";
         using (UnityWebRequest webRequest = UnityWebRequest.Get(this.urlToGet))
         {
             // Request and wait for the desired page.
@@ -148,7 +142,7 @@ public class MoleculeFactory : MonoBehaviour
                     Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
 
                     var molecule = this.JsonToMoleculeItem(webRequest.downloadHandler.text);
 
@@ -156,24 +150,17 @@ public class MoleculeFactory : MonoBehaviour
                     break;
             }
         }
-        Debug.Log("Ended");
     }
 
     void InitializeMolecule(MoleculeItem molecule)
     {
         for (int i = 0; i < molecule.atomsList.Count; i++)
         {
-            GameObject atomObject = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            atomObject.transform.SetParent(this.transform);
+            MoleculeAtom atom = molecule.atomsList[i];
+            AtomItem atomData = this.atomList[atom.atomNumber - 1];
+            AtomObject atomObject = GameObject.Instantiate(atomPrefab, this.transform);
 
-            MoleculeAtom atomItem = molecule.atomsList[i];
-
-            atomObject.transform.position = atomItem.position;
-            AtomItem atomData = this.atomList[atomItem.atomNumber - 1];
-
-            atomObject.transform.localScale = new Vector3(atomData.Scale, atomData.Scale, atomData.Scale);
-            var renderer = atomObject.GetComponent<Renderer>();
-            renderer.material.color = atomData.Color;
+            atomObject.SetData(Camera.main, atomData.Symbol, atom.position, atomData.Scale, atomData.Color);
 
             this.objectAtomsList.Add(atomObject);
         }
@@ -181,14 +168,16 @@ public class MoleculeFactory : MonoBehaviour
         for (int i = 0; i < molecule.bondsList.Count; i++)
         {
             var bond = molecule.bondsList[i];
+            var firstAtom = this.objectAtomsList[bond.first];
+            var secondAtom = this.objectAtomsList[bond.second];
 
-            var startPos = this.objectAtomsList[bond.first].transform.position;
-            var endPos = this.objectAtomsList[bond.second].transform.position;
+            var startPos = firstAtom.transform.position;
+            var endPos = secondAtom.transform.position;
 
-            Color firstColor = this.atomList[molecule.atomsList[bond.first].atomNumber - 1].Color;
-            Color secondColor = this.atomList[molecule.atomsList[bond.second].atomNumber - 1].Color;
+            Color firstColor = firstAtom.color;
+            Color secondColor = secondAtom.color;
 
-            this.bondsManager.AddBond(startPos, endPos, firstColor, secondColor);
+            this.bondsManager.AddBond(startPos, endPos, firstColor, secondColor, bond.order);
         }
     }
 

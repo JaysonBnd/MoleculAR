@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+
 public class AtomObject : MonoBehaviour
 {
     public Camera cam;
@@ -12,15 +13,29 @@ public class AtomObject : MonoBehaviour
     public float thresholdDistanceOpacity;
     public TextMeshProUGUI atomSymbol;
 
+    public string symbol = "";
+    public Color color = Color.white;
+ 
+
     // Start is called before the first frame update
     void Start()
     {
 
     }
 
-    public void SetCamera(Camera cam)
+    public void SetData(Camera cam, string symbol,Vector3 position, float scale, Color color)
     {
         this.cam = cam;
+        this.symbol = symbol;
+        this.color = color;
+
+        this.atomSymbol.text = this.symbol;
+
+        this.transform.position = position;
+        this.transform.localScale = new Vector3(scale, scale, scale);
+
+        var renderer = this.GetComponent<Renderer>();
+        renderer.material.color = this.color;
     }
 
     // Update is called once per frame
@@ -35,7 +50,6 @@ public class AtomObject : MonoBehaviour
                 this.atomCanva.enabled = true;
             }
             float percent = 1.0f - (distanceToCamera - this.thresholdDistanceOpacity) / (this.thresholdDistanceVisibility - this.thresholdDistanceOpacity);
-            Debug.Log($"{distanceToCamera} {this.thresholdDistanceVisibility - this.thresholdDistanceOpacity} {percent}" );
 
             if (percent > 1.0f)
             {

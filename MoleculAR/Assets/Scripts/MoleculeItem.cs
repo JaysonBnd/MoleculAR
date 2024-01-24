@@ -13,6 +13,7 @@ public class MoleculeBond
 {
     public int first = 0;
     public int second = 0;
+    public int order = 0;
 }
 
 [System.Serializable]
