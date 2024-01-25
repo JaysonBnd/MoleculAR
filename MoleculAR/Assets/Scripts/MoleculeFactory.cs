@@ -10,7 +10,7 @@ public class MoleculeFactory : MonoBehaviour
 {
     // Start is called before the first frame update
     private List<AtomObject> objectAtomsList;
-    private BondManager bondsManager;
+    public BondManager bondsManager;
     private string uriAtom;
 
     private float lastScale;
@@ -26,7 +26,6 @@ public class MoleculeFactory : MonoBehaviour
 
 
         this.objectAtomsList = new List<AtomObject>();
-        this.bondsManager = GameObject.Instantiate(this.bondPrefab, this.transform);
         this.bondsManager.InitializeBond();
         this.uriAtom = "http://localhost:5000/api/atom";
 
@@ -177,7 +176,7 @@ public class MoleculeFactory : MonoBehaviour
             Color firstColor = firstAtom.color;
             Color secondColor = secondAtom.color;
 
-            this.bondsManager.AddBond(startPos, endPos, firstColor, secondColor, bond.order);
+            this.bondsManager.AddBond(startPos, endPos, firstColor, secondColor, bond.order, $"{firstAtom.symbol}_{secondAtom.symbol}");
         }
     }
 

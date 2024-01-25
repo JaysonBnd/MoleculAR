@@ -1,24 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.UI;
 using UnityEngine;
 
 
-class Bond
-{
-    public LineRenderer start;
-    public LineRenderer end;
-}
-
 public class BondManager : MonoBehaviour
 {
-    public LineRenderer linePrefab;
+    public BondItem bondPrefab;
 
-    private List<List<Bond>> bondsList;
+    private List<List<BondItem>> bondsList;
     // Start is called before the first frame update
     void Start()
     {
-        this.bondsList = new List<List<Bond>>();
+        this.bondsList = new List<List<BondItem>>();
     }
 
     void setPosition(LineRenderer startLine, Vector3 startPosition, LineRenderer endLine, Vector3 endPosition)
@@ -53,52 +48,61 @@ public class BondManager : MonoBehaviour
 
     public void InitializeBond()
     {
-        this.bondsList = new List<List<Bond>>();
+        this.bondsList = new List<List<BondItem>>();
     }
 
-    public void AddBond(Vector3 startPosition, Vector3 endPosition, Color startColor, Color endColor, int order)
+    public void AddBond(Vector3 startPosition, Vector3 endPosition, Color startColor, Color endColor, int order, string nameAtomsBond)
     {
-        List<Bond> tmpBonds = new List<Bond>();
+        var bondEmptyObject = new GameObject($"Bonds_{nameAtomsBond}");
+
+        var localScale = bondEmptyObject.transform.localScale;
+        localScale.z = Vector3.Distance(startPosition, endPosition);
+        bondEmptyObject.transform.localScale = localScale;
+        bondEmptyObject.transform.position = startPosition;
+        bondEmptyObject.transform.LookAt(endPosition);
+
+        List<BondItem> tmpBonds = new List<BondItem>();
         for (int i = 0; i < order; i++)
         {
             float scale = (float)(i + 1) / (order + 1);
 
-            var startLine = LineRenderer.Instantiate(linePrefab, this.transform);
-            var endLine = LineRenderer.Instantiate(linePrefab, this.transform);
+            bondEmptyObject.transform.parent = this.transform;
 
-            var tmpStartPosition = startPosition;
-            Quaternion tmpQuaternion = new Quaternion();
-            tmpQuaternion.SetFromToRotation(startLine.transform.position, endLine.transform.position);
+            var bond = LineRenderer.Instantiate(bondPrefab, bondEmptyObject.transform);
+            bond.name = $"Bond_{i}";
 
-            Debug.Log(tmpQuaternion);
-            tmpStartPosition += (startPosition - endPosition) * (0.20f * (1.0f - scale) - (0.20f * scale));
+            var localEmptyObjectLocationY = (0.3f * (1.0f - scale)) - (0.3f * scale);
 
-            var tmpEndPosition = endPosition;
-            tmpEndPosition += (startPosition - endPosition) * (0.20f * (1.0f - scale) - (0.20f * scale));
+            var bondPosition = bond.transform.localPosition;
+            bondPosition.y = localEmptyObjectLocationY;
 
-            this.setPosition(startLine, tmpStartPosition, endLine, tmpEndPosition);
-            this.SetColor(startLine, startColor, endLine, endColor);
+            var bondScale = bond.transform.localScale;
+            bondScale.x *= (float)order / (order * 3 - 2);
+            bondScale.y *= (float)order / (order * 3 - 2);
+            bond.transform.localScale = bondScale;
 
-            tmpBonds.Add(new Bond()
-            {
-                start = startLine,
-                end = endLine
-            });
+            bond.transform.localPosition = bondPosition;
+
+            Debug.Log($"{bond.name} - {localEmptyObjectLocationY}");
+
+            bond.SetColor(startColor, endColor);
+
+            tmpBonds.Add(bond);
+
         }
         this.bondsList.Add(tmpBonds);
     }
 
     public void UpdateBondWidthMultiplier(float widthMultiplier)
     {
-        foreach (var bonds in this.bondsList)
-        {
-            foreach (var bond in bonds)
-            {
+        //foreach (var bonds in this.bondsList)
+        //{
+        //foreach (var bond in bonds)
+        //{
 
-                bond.start.widthMultiplier = widthMultiplier;
-                bond.end.widthMultiplier = widthMultiplier;
-            }
-        }
+        //       bond.start.widthMultiplier = widthMultiplier;
+        //bond.end.widthMultiplier = widthMultiplier;
+        //}
     }
 
     // Update is called once per frame

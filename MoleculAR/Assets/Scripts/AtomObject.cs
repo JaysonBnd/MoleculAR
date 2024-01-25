@@ -30,6 +30,7 @@ public class AtomObject : MonoBehaviour
         this.color = color;
 
         this.atomSymbol.text = this.symbol;
+        this.name = $"Atom_{symbol}";
 
         this.transform.position = position;
         this.transform.localScale = new Vector3(scale, scale, scale);

@@ -289,7 +289,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f57d2c2594fd4e94f9868bab9f57e91e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  urlToGet: http://192.168.1.52:5000/api/molecule/aromatics/caffeine
+  bondsManager: {fileID: 1373190874}
+  urlToGet: http://localhost:5000/api/molecule/nitriles/1_1_1-trichloroacetonitrile
   bondPrefab: {fileID: 7263296620925034519, guid: 30495fee3865e204aa4733cca2aa9f9f,
     type: 3}
   atomPrefab: {fileID: 8036711930094208413, guid: a51543d0ac86c564f83a493e001abec8,
@@ -306,7 +307,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1373190875}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &275979142
@@ -495,84 +497,98 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1001 &6027353272191763747
+--- !u!114 &1373190874 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7263296620925034519, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1515379623}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab55580fbc03439439e5f3662cb7e1dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1373190875 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1515379623}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1515379623
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 214028255}
     m_Modifications:
-    - target: {fileID: 5410928026104352835, guid: a51543d0ac86c564f83a493e001abec8,
+    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5410928026104352835, guid: a51543d0ac86c564f83a493e001abec8,
+    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5410928026104352835, guid: a51543d0ac86c564f83a493e001abec8,
+    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5410928026104352835, guid: a51543d0ac86c564f83a493e001abec8,
+    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 5410928026104352835, guid: a51543d0ac86c564f83a493e001abec8,
+    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
         type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5410928026104352835, guid: a51543d0ac86c564f83a493e001abec8,
+    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5410928026104352835, guid: a51543d0ac86c564f83a493e001abec8,
+    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5410928026104352835, guid: a51543d0ac86c564f83a493e001abec8,
+    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5410928026104352835, guid: a51543d0ac86c564f83a493e001abec8,
+    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5410928026104352835, guid: a51543d0ac86c564f83a493e001abec8,
+    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6551378490231683699, guid: a51543d0ac86c564f83a493e001abec8,
+    - target: {fileID: 7263296620925034519, guid: 30495fee3865e204aa4733cca2aa9f9f,
+        type: 3}
+      propertyPath: bondPrefab
+      value: 
+      objectReference: {fileID: 313772874980476013, guid: 9a959149ec033694f9d56bdd1b773432,
+        type: 3}
+    - target: {fileID: 9120231361073334636, guid: 30495fee3865e204aa4733cca2aa9f9f,
         type: 3}
       propertyPath: m_Name
-      value: Atom
+      value: BondManager
       objectReference: {fileID: 0}
-    - target: {fileID: 6551378490231683699, guid: a51543d0ac86c564f83a493e001abec8,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8036711930094208413, guid: a51543d0ac86c564f83a493e001abec8,
-        type: 3}
-      propertyPath: cam
-      value: 
-      objectReference: {fileID: 143570973}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: a51543d0ac86c564f83a493e001abec8, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 30495fee3865e204aa4733cca2aa9f9f, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -580,5 +596,4 @@ SceneRoots:
   - {fileID: 143570974}
   - {fileID: 596064864}
   - {fileID: 214028255}
-  - {fileID: 6027353272191763747}
   - {fileID: 275979145}
