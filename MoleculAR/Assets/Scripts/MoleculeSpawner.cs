@@ -7,10 +7,10 @@ using UnityEngine.Networking;
 using UnityEngine.XR.Interaction.Toolkit.Utilities;
 using static UnityEngine.Rendering.DebugUI;
 
-public class ObjectSpawner : MonoBehaviour
+public class MoleculeSpawner : MonoBehaviour
 {
     [Tooltip("The camera that objects will face when spawned. If not set, defaults to the main camera.")]
-    public Camera cameraToFace = Camera.main;
+    public Camera cameraToFace;
 
     [Tooltip("The list of prefabs available to spawn.")]
     public MoleculeFactory moleculeFactoryPrefab;
@@ -21,7 +21,7 @@ public class ObjectSpawner : MonoBehaviour
 
     [Tooltip("The index of the prefab to spawn. If outside the range of the list, this behavior will select " +
         "a random object each time it spawns.")]
-    public string spawnUrlToFetch = "";
+    public string pathToFetch = "";
 
     [Tooltip("Whether to only spawn an object if the spawn point is within view of the camera.")]
     public bool onlySpawnInView = true;
@@ -33,6 +33,8 @@ public class ObjectSpawner : MonoBehaviour
     public string apiUrl = "http://localhost:5000";
     private string atomPathUrl = "api/atom";
     private string moleculePathUrl = "api/molecule";
+
+    public UIScript uiScript;
 
     public Dictionary<string, Dictionary<string, Texture2D>> moleculeTexture2DDictionary = new Dictionary<string, Dictionary<string, Texture2D>>();
     public List<AtomItem> atomList = new List<AtomItem>();
@@ -63,6 +65,12 @@ public class ObjectSpawner : MonoBehaviour
     /// <seealso cref="objectSpawned"/>
     /// 
 
+    private void Start()
+    {
+        this.cameraToFace = Camera.main;
+        StartCoroutine(this.AtomGetRequest(this.apiUrl));
+
+    }
 
     public void SetNewUrl(string url)
     {
@@ -115,6 +123,7 @@ public class ObjectSpawner : MonoBehaviour
                     //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     this.atomList = this.JsonToAtomsItem(webRequest.downloadHandler.text);
                     this.apiUrl = url;
+
                     break;
             }
         }
@@ -134,9 +143,10 @@ public class ObjectSpawner : MonoBehaviour
             }
         }
 
-        var spawnUrlToFetch = this.spawnUrlToFetch;
+        var pathToFetch = this.pathToFetch;
 
-        if (spawnUrlToFetch.Length == 0)
+
+        if (pathToFetch.Length == 0)
         {
             return false;
         }
@@ -158,7 +168,17 @@ public class ObjectSpawner : MonoBehaviour
         }
 
         ObjectSpawned?.Invoke(moleculeFactory.gameObject);
-        StartCoroutine(moleculeFactory.MoleculeGetRequest(this.atomList, spawnUrlToFetch));
+
+        StartCoroutine(this.StartMoleculeFactoryCoroutine(moleculeFactory, this.atomList, $"{this.apiUrl}/{this.moleculePathUrl}/{pathToFetch}"));
+
         return true;
+    }
+
+    private IEnumerator StartMoleculeFactoryCoroutine(MoleculeFactory moleculeFactory, List<AtomItem> atomItemList, string uriMolecule)
+    {
+        this.uiScript.UpdateButton();
+        moleculeFactory.MoleculeGetRequest(atomItemList, uriMolecule);
+        this.uiScript.UpdateButton();
+        yield return null;
     }
 }

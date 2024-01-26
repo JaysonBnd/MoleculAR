@@ -9,7 +9,7 @@ public class UIScript : MonoBehaviour
     public Button deleteButton;
     public Button optionButton;
 
-    public GameObject objectSpawner;
+    public GameObject moleculeSpawner;
 
     // Start is called before the first frame update
     void Start()
@@ -17,10 +17,9 @@ public class UIScript : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
+    public void UpdateButton()
     {
-        if (this.objectSpawner.transform.childCount > 0)
+        if (this.moleculeSpawner.transform.childCount > 0)
         {
             this.openButton.gameObject.SetActive(false);
             this.deleteButton.gameObject.SetActive(true);
@@ -31,5 +30,11 @@ public class UIScript : MonoBehaviour
             this.deleteButton.gameObject.SetActive(false);
 
         }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 }

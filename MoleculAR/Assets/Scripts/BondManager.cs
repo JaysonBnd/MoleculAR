@@ -86,6 +86,7 @@ public class BondManager : MonoBehaviour
             Debug.Log($"{bond.name} - {localEmptyObjectLocationY}");
 
             bond.SetColor(startColor, endColor);
+            bond.SetElectronHigherParent(this.transform.parent);
 
             tmpBonds.Add(bond);
 

@@ -11,8 +11,11 @@ public class ElectronItem : MonoBehaviour
     void Start()
     {
         this.higherParent = this.transform;
-        for (; higherParent.parent != null; higherParent = higherParent.parent) ;
-        Debug.Log($"{this.name} : {this.higherParent.name}");
+    }
+
+    public void SetHigherParent(Transform parent)
+    {
+        this.higherParent = parent;
     }
 
     public void SetColor(Color color)

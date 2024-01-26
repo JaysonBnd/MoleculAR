@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
 using static UnityEngine.Rendering.DebugUI;
@@ -21,6 +22,8 @@ public class MoleculeFactory : MonoBehaviour
     public BondManager bondPrefab;
     public AtomObject atomPrefab;
 
+    public bool isIntancied = false;
+
     void Start()
     {
 
@@ -31,7 +34,11 @@ public class MoleculeFactory : MonoBehaviour
 
         this.atomList = new List<AtomItem>();
         // A correct website page.
-        StartCoroutine(this.AtomGetRequest());
+        if (this.isIntancied)
+        {
+            StartCoroutine(this.AtomGetRequest());
+
+        }
 
         this.lastScale = (this.transform.localScale.x + this.transform.localScale.y + this.transform.localScale.z) / 3;
     }
@@ -120,7 +127,7 @@ public class MoleculeFactory : MonoBehaviour
         return molecule;
     }
 
-    public IEnumerator MoleculeGetRequest(List<AtomItem> atomList, string uriMolecule)
+    public IEnumerator MoleculeGetRequest(List<AtomItem> atomItemList, string uriMolecule)
     {
         //uri_molecule = $"{this.GetIP()}";
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uriMolecule))
@@ -141,35 +148,44 @@ public class MoleculeFactory : MonoBehaviour
                     Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                    //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
+                    Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
 
                     var molecule = this.JsonToMoleculeItem(webRequest.downloadHandler.text);
 
-                    InitializeMolecule(molecule, atomList);
+                    InitializeMolecule(molecule, atomItemList);
                     break;
             }
         }
     }
 
-    void InitializeMolecule(MoleculeItem molecule, List<AtomItem> atomList)
+    void InitializeMolecule(MoleculeItem molecule, List<AtomItem> atomItemList)
     {
+        Debug.Log("Je suis arrivé jusqu'ici");
+        var lowerYPoint = Mathf.Infinity;
+
         for (int i = 0; i < molecule.atomsList.Count; i++)
         {
             MoleculeAtom atom = molecule.atomsList[i];
 
             AtomItem atomData = new AtomItem() { AtomicNumber = 0, Color = Color.white, Scale = 1.0f, Symbol = "" };
-            if (atomList.Count > atom.atomNumber - 1)
+            if (atomItemList.Count > atom.atomNumber - 1)
             {
-                atomData = atomList[atom.atomNumber - 1];
-
+                atomData = atomItemList[atom.atomNumber - 1];
             }
 
             AtomObject atomObject = GameObject.Instantiate(atomPrefab, this.transform);
 
             atomObject.SetData(Camera.main, atomData.Symbol, atom.position, atomData.Scale, atomData.Color);
-
+            if (atomObject.transform.position.y - 1.0f < lowerYPoint)
+            {
+                lowerYPoint = atomObject.transform.position.y - 1.0f;
+            }
             this.objectAtomsList.Add(atomObject);
         }
+
+        var tmpPosition = this.transform.localPosition;
+        tmpPosition.y -= lowerYPoint;
+        this.transform.localPosition = tmpPosition;
 
         for (int i = 0; i < molecule.bondsList.Count; i++)
         {
