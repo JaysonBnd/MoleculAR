@@ -81,7 +81,7 @@ public class MoleculeFactory : MonoBehaviour
                     this.atomList = this.JsonToAtomsItem(webRequest.downloadHandler.text);
 
                     // A correct website page.
-                    StartCoroutine(this.MoleculeGetRequest());
+                    StartCoroutine(this.MoleculeGetRequest(this.atomList, this.urlToGet));
                     break;
             }
         }
@@ -120,15 +120,15 @@ public class MoleculeFactory : MonoBehaviour
         return molecule;
     }
 
-    IEnumerator MoleculeGetRequest()
+    public IEnumerator MoleculeGetRequest(List<AtomItem> atomList, string uriMolecule)
     {
         //uri_molecule = $"{this.GetIP()}";
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(this.urlToGet))
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(uriMolecule))
         {
             // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
-            string[] pages = this.urlToGet.Split('/');
+            string[] pages = uriMolecule.Split('/');
             int page = pages.Length - 1;
 
             switch (webRequest.result)
@@ -145,18 +145,25 @@ public class MoleculeFactory : MonoBehaviour
 
                     var molecule = this.JsonToMoleculeItem(webRequest.downloadHandler.text);
 
-                    InitializeMolecule(molecule);
+                    InitializeMolecule(molecule, atomList);
                     break;
             }
         }
     }
 
-    void InitializeMolecule(MoleculeItem molecule)
+    void InitializeMolecule(MoleculeItem molecule, List<AtomItem> atomList)
     {
         for (int i = 0; i < molecule.atomsList.Count; i++)
         {
             MoleculeAtom atom = molecule.atomsList[i];
-            AtomItem atomData = this.atomList[atom.atomNumber - 1];
+
+            AtomItem atomData = new AtomItem() { AtomicNumber = 0, Color = Color.white, Scale = 1.0f, Symbol = "" };
+            if (atomList.Count > atom.atomNumber - 1)
+            {
+                atomData = atomList[atom.atomNumber - 1];
+
+            }
+
             AtomObject atomObject = GameObject.Instantiate(atomPrefab, this.transform);
 
             atomObject.SetData(Camera.main, atomData.Symbol, atom.position, atomData.Scale, atomData.Color);
