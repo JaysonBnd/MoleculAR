@@ -1,7 +1,7 @@
 import base64
 from email.mime import image
 from typing import Any
-from flask import Flask, jsonify
+from flask import Flask, jsonify, send_file
 from flask_restful import Resource, Api
 import os
 import json
@@ -19,6 +19,15 @@ def get_information(molecule_json: dict[str, Any]) -> dict[str, Any]:
         "elements": molecule_json["atoms"]["elements"]["number"],
         "bonds": molecule_json["bonds"],
     }
+
+
+@app.route("/api/molecule/<family>/<mole>/image", methods=["GET"])
+def get_molecule_image(family, mole):
+    sub_molecule_dir = os.path.join(MOL_DIR, family)
+    molecule_file = f"{os.path.join(sub_molecule_dir, mole)}.png"
+
+    if os.path.exists(molecule_file):
+        return send_file(molecule_file, mimetype="image/png")
 
 
 @app.route("/api/molecule/<family>/<mole>", methods=["GET"])
@@ -50,7 +59,6 @@ def get_family_data(family):
                 {
                     "path": url_path,
                     "name": file_name,
-                    "image": encoded_image.decode("utf-8"),
                 }
             )
 
