@@ -13,7 +13,8 @@ public class MoleculeSpawner : MonoBehaviour
     public Camera cameraToFace;
 
     [Tooltip("The list of prefabs available to spawn.")]
-    public MoleculeFactory moleculeFactoryPrefab;
+    public GameObject interactibleMoleculeFactoryPrefab;
+    //public MoleculeFactory moleculeFactoryPrefab;
 
     [Tooltip("Optional prefab to spawn for each spawned object. Use a prefab with the Destroy Self component to make " +
         "sure the visualization only lives temporarily.")]
@@ -34,8 +35,6 @@ public class MoleculeSpawner : MonoBehaviour
     private string atomPathUrl = "api/atom";
     private string moleculePathUrl = "api/molecule";
 
-    public UIScript uiScript;
-
     public Dictionary<string, Dictionary<string, Texture2D>> moleculeTexture2DDictionary = new Dictionary<string, Dictionary<string, Texture2D>>();
     public List<AtomItem> atomList = new List<AtomItem>();
 
@@ -44,6 +43,9 @@ public class MoleculeSpawner : MonoBehaviour
     /// </summary>
     /// <seealso cref="TrySpawnObject"/>
     public event Action<GameObject> ObjectSpawned;
+
+
+    private int status = 0;
 
     /// <summary>
     /// See <see cref="MonoBehaviour"/>.
@@ -75,6 +77,15 @@ public class MoleculeSpawner : MonoBehaviour
     public void SetNewUrl(string url)
     {
         StartCoroutine(this.AtomGetRequest(url));
+    }
+
+    public int GetStatus()
+    {
+        return this.status;
+    }
+    public void SetStatus(int status)
+    {
+        this.status = status;
     }
 
     List<AtomItem> JsonToAtomsItem(string json_string)
@@ -131,6 +142,13 @@ public class MoleculeSpawner : MonoBehaviour
 
     public bool TrySpawnObject(Vector3 spawnPoint, Vector3 spawnNormal)
     {
+        if (this.status != 0)
+        {
+            return false;
+        }
+
+        this.status = 1;
+
         if (this.onlySpawnInView)
         {
             var inViewMin = this.viewportPeriphery;
@@ -139,6 +157,7 @@ public class MoleculeSpawner : MonoBehaviour
             if (pointInViewportSpace.z < 0f || pointInViewportSpace.x > inViewMax || pointInViewportSpace.x < inViewMin ||
                 pointInViewportSpace.y > inViewMax || pointInViewportSpace.y < inViewMin)
             {
+                this.status = 0;
                 return false;
             }
         }
@@ -148,37 +167,43 @@ public class MoleculeSpawner : MonoBehaviour
 
         if (pathToFetch.Length == 0)
         {
+            this.status = 0;
             return false;
         }
 
-        var moleculeFactory = Instantiate(this.moleculeFactoryPrefab, this.transform);
-
-        moleculeFactory.transform.position = spawnPoint;
+        var interactibleMoleculeFactory = Instantiate(this.interactibleMoleculeFactoryPrefab, this.transform);
+        interactibleMoleculeFactory.transform.position = spawnPoint;
 
         var facePosition = this.cameraToFace.transform.position;
         var forward = facePosition - spawnPoint;
         BurstMathUtility.ProjectOnPlane(forward, spawnNormal, out var projectedForward);
-        moleculeFactory.transform.rotation = Quaternion.LookRotation(projectedForward, spawnNormal);
+        interactibleMoleculeFactory.transform.rotation = Quaternion.LookRotation(projectedForward, spawnNormal);
 
         if (this.spawnVisualizationPrefab != null)
         {
             var visualizationTrans = Instantiate(this.spawnVisualizationPrefab).transform;
             visualizationTrans.position = spawnPoint;
-            visualizationTrans.rotation = moleculeFactory.transform.rotation;
+            visualizationTrans.rotation = interactibleMoleculeFactory.transform.rotation;
         }
 
-        ObjectSpawned?.Invoke(moleculeFactory.gameObject);
+        ObjectSpawned?.Invoke(interactibleMoleculeFactory);
 
-        StartCoroutine(this.StartMoleculeFactoryCoroutine(moleculeFactory, this.atomList, $"{this.apiUrl}/{this.moleculePathUrl}/{pathToFetch}"));
+        StartCoroutine(this.StartMoleculeFactoryCoroutine(interactibleMoleculeFactory, this.atomList, $"{this.apiUrl}/{this.moleculePathUrl}/{pathToFetch}"));
 
         return true;
     }
 
-    private IEnumerator StartMoleculeFactoryCoroutine(MoleculeFactory moleculeFactory, List<AtomItem> atomItemList, string uriMolecule)
+    private IEnumerator StartMoleculeFactoryCoroutine(GameObject interactibleMoleculeFactory, List<AtomItem> atomItemList, string uriMolecule)
     {
-        this.uiScript.UpdateButton();
-        moleculeFactory.MoleculeGetRequest(atomItemList, uriMolecule);
-        this.uiScript.UpdateButton();
+        var moleculeFactory = interactibleMoleculeFactory.GetComponentInChildren<MoleculeFactory>();
+
+        yield return moleculeFactory.MoleculeGetRequest(atomItemList, uriMolecule);
+        if (moleculeFactory.IsMoleculeIntanciate())
+        {
+            this.status = 2;
+        }
+        moleculeFactory.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+
         yield return null;
     }
 }

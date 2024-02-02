@@ -10,7 +10,6 @@ public class ElectronItem : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.higherParent = this.transform;
     }
 
     public void SetHigherParent(Transform parent)
@@ -40,11 +39,15 @@ public class ElectronItem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.transform.localScale = Vector3.one;
-        //this.transform.localScale = Vector3.Scale(thirdParent.localScale, (this.transform.lossyScale * this.globalScale));
-        this.transform.localScale = Vector3.Scale(this.higherParent.localScale, new Vector3(globalScale / transform.lossyScale.x, globalScale / transform.lossyScale.y, globalScale / transform.lossyScale.z));
+        Debug.Log(this.higherParent);
+        if (this.higherParent != null)
+        {
+            this.transform.localScale = Vector3.one;
+            //this.transform.localScale = Vector3.Scale(thirdParent.localScale, (this.transform.lossyScale * this.globalScale));
+            this.transform.localScale = Vector3.Scale(this.higherParent.localScale, new Vector3(globalScale / transform.lossyScale.x, globalScale / transform.lossyScale.y, globalScale / transform.lossyScale.z));
 
-        var trailRenderer = this.GetComponent<TrailRenderer>();
-        trailRenderer.widthMultiplier = this.transform.lossyScale.x;
+            var trailRenderer = this.GetComponent<TrailRenderer>();
+            trailRenderer.widthMultiplier = this.transform.lossyScale.x;
+        }
     }
 }

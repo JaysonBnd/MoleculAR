@@ -10,13 +10,13 @@ using static UnityEngine.Rendering.DebugUI;
 public class MoleculeFactory : MonoBehaviour
 {
     // Start is called before the first frame update
-    private List<AtomObject> objectAtomsList;
+    private List<AtomObject> objectAtomsList = new List<AtomObject>();
     public BondManager bondsManager;
-    private string uriAtom;
+    private string uriAtom = "http://localhost:5000/api/atom";
 
-    private float lastScale;
+    private float lastScale = 1.0f;
 
-    private List<AtomItem> atomList;
+    private List<AtomItem> atomList = new List<AtomItem>();
     public string urlToGet;
 
     public BondManager bondPrefab;
@@ -24,23 +24,25 @@ public class MoleculeFactory : MonoBehaviour
 
     public bool isIntancied = false;
 
+    private bool isMoleculeIntanciate = false;
+
+    private Transform lowerAtom;
+
     void Start()
     {
-
-
-        this.objectAtomsList = new List<AtomObject>();
         this.bondsManager.InitializeBond();
-        this.uriAtom = "http://localhost:5000/api/atom";
-
-        this.atomList = new List<AtomItem>();
+        
         // A correct website page.
         if (this.isIntancied)
         {
             StartCoroutine(this.AtomGetRequest());
 
         }
+    }
 
-        this.lastScale = (this.transform.localScale.x + this.transform.localScale.y + this.transform.localScale.z) / 3;
+    public bool IsMoleculeIntanciate()
+    {
+        return this.isMoleculeIntanciate;
     }
 
     List<AtomItem> JsonToAtomsItem(string json_string)
@@ -132,6 +134,7 @@ public class MoleculeFactory : MonoBehaviour
         //uri_molecule = $"{this.GetIP()}";
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uriMolecule))
         {
+            Debug.Log("I'm here in Molecule Factory !");
             // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
@@ -153,6 +156,7 @@ public class MoleculeFactory : MonoBehaviour
                     var molecule = this.JsonToMoleculeItem(webRequest.downloadHandler.text);
 
                     InitializeMolecule(molecule, atomItemList);
+                    this.isMoleculeIntanciate = true;
                     break;
             }
         }
@@ -160,7 +164,6 @@ public class MoleculeFactory : MonoBehaviour
 
     void InitializeMolecule(MoleculeItem molecule, List<AtomItem> atomItemList)
     {
-        Debug.Log("Je suis arrivé jusqu'ici");
         var lowerYPoint = Mathf.Infinity;
 
         for (int i = 0; i < molecule.atomsList.Count; i++)
@@ -176,9 +179,10 @@ public class MoleculeFactory : MonoBehaviour
             AtomObject atomObject = GameObject.Instantiate(atomPrefab, this.transform);
 
             atomObject.SetData(Camera.main, atomData.Symbol, atom.position, atomData.Scale, atomData.Color);
-            if (atomObject.transform.position.y - 1.0f < lowerYPoint)
+            if (atomObject.transform.position.y < lowerYPoint)
             {
-                lowerYPoint = atomObject.transform.position.y - 1.0f;
+                lowerYPoint = atomObject.transform.position.y;
+                this.lowerAtom = atomObject.transform;
             }
             this.objectAtomsList.Add(atomObject);
         }
@@ -200,6 +204,7 @@ public class MoleculeFactory : MonoBehaviour
             Color secondColor = secondAtom.color;
 
             this.bondsManager.AddBond(startPos, endPos, firstColor, secondColor, bond.order, $"{firstAtom.symbol}_{secondAtom.symbol}");
+            this.bondsManager.SetHigherParent(this.transform);
         }
     }
 

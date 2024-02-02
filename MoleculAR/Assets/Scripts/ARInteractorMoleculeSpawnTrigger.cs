@@ -181,7 +181,7 @@ public class ARInteractorMoleculeSpawnTrigger : MonoBehaviour
 
             if (m_RequireHorizontalUpSurface && arPlane.alignment != PlaneAlignment.HorizontalUp)
                 return;
-
+            Debug.Log(m_ObjectSpawner);
             m_ObjectSpawner.TrySpawnObject(arRaycastHit.pose.position, arPlane.normal);
         }
     }

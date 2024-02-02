@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6194698717283432532}
   - component: {fileID: 7263296620925034519}
+  - component: {fileID: 7308348571830044360}
   m_Layer: 0
   m_Name: BondManager
   m_TagString: Untagged
@@ -44,5 +45,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab55580fbc03439439e5f3662cb7e1dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bondPrefab: {fileID: 7477892865111987913, guid: 9a959149ec033694f9d56bdd1b773432,
+  bondPrefab: {fileID: 313772874980476013, guid: 9a959149ec033694f9d56bdd1b773432,
     type: 3}
+--- !u!54 &7308348571830044360
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9120231361073334636}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

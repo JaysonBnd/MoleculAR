@@ -15,7 +15,8 @@ public class AtomObject : MonoBehaviour
 
     public string symbol = "";
     public Color color = Color.white;
- 
+    public float scale = 1.0f;
+
 
     // Start is called before the first frame update
     void Start()
@@ -34,6 +35,7 @@ public class AtomObject : MonoBehaviour
 
         this.transform.position = position;
         this.transform.localScale = new Vector3(scale, scale, scale);
+        this.scale = scale;
 
         var renderer = this.GetComponent<Renderer>();
         renderer.material.color = this.color;
