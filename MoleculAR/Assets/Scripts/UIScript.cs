@@ -23,6 +23,7 @@ public class UIScript : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
+        this.moleculeSpawner.SetStatus(0);
     }
 
     public void UpdateButton()

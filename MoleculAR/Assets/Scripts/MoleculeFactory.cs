@@ -166,6 +166,9 @@ public class MoleculeFactory : MonoBehaviour
     {
         var lowerYPoint = Mathf.Infinity;
 
+        var farest_atom = 0.0f;
+        var atom_scale = 0.0f;
+
         for (int i = 0; i < molecule.atomsList.Count; i++)
         {
             MoleculeAtom atom = molecule.atomsList[i];
@@ -185,7 +188,17 @@ public class MoleculeFactory : MonoBehaviour
                 this.lowerAtom = atomObject.transform;
             }
             this.objectAtomsList.Add(atomObject);
+
+            var distance_to_atom = Vector3.Distance(this.transform.position, atomObject.transform.position);
+
+            if (distance_to_atom> farest_atom)
+            {
+                farest_atom = distance_to_atom;
+                atom_scale =  atomObject.scale;
+            }
         }
+        var sphereCollider =         this.GetComponent<SphereCollider>();
+        sphereCollider.radius = farest_atom;
 
         var tmpPosition = this.transform.localPosition;
         tmpPosition.y -= lowerYPoint;

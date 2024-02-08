@@ -260,57 +260,6 @@ MonoBehaviour:
     mipBias: 0
     varianceClampScale: 0.9
     contrastAdaptiveSharpening: 0
---- !u!1 &214028253
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 214028255}
-  - component: {fileID: 214028254}
-  m_Layer: 0
-  m_Name: MoleculeFactory
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &214028254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 214028253}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f57d2c2594fd4e94f9868bab9f57e91e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bondsManager: {fileID: 1373190874}
-  urlToGet: http://localhost:5000/api/molecule/nitriles/1_1_1-trichloroacetonitrile
-  bondPrefab: {fileID: 7263296620925034519, guid: 30495fee3865e204aa4733cca2aa9f9f,
-    type: 3}
-  atomPrefab: {fileID: 8036711930094208413, guid: a51543d0ac86c564f83a493e001abec8,
-    type: 3}
---- !u!4 &214028255
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 214028253}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1373190875}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &275979142
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,103 +446,89 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!114 &1373190874 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7263296620925034519, guid: 30495fee3865e204aa4733cca2aa9f9f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1515379623}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab55580fbc03439439e5f3662cb7e1dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &1373190875 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
-    type: 3}
-  m_PrefabInstance: {fileID: 1515379623}
-  m_PrefabAsset: {fileID: 0}
---- !u!1001 &1515379623
+--- !u!1001 &642473516
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 214028255}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    - target: {fileID: 3049338099113473197, guid: a90be014a329ddd4f90d3164e53c62aa,
+        type: 3}
+      propertyPath: m_Name
+      value: MoleculeFactory
+      objectReference: {fileID: 0}
+    - target: {fileID: 6482322803758833137, guid: a90be014a329ddd4f90d3164e53c62aa,
+        type: 3}
+      propertyPath: urlToGet
+      value: http://localhost:5000/api/molecule/alcohols/ethanol
+      objectReference: {fileID: 0}
+    - target: {fileID: 6482322803758833137, guid: a90be014a329ddd4f90d3164e53c62aa,
+        type: 3}
+      propertyPath: isIntancied
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8444144465335243334, guid: a90be014a329ddd4f90d3164e53c62aa,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    - target: {fileID: 8444144465335243334, guid: a90be014a329ddd4f90d3164e53c62aa,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    - target: {fileID: 8444144465335243334, guid: a90be014a329ddd4f90d3164e53c62aa,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    - target: {fileID: 8444144465335243334, guid: a90be014a329ddd4f90d3164e53c62aa,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    - target: {fileID: 8444144465335243334, guid: a90be014a329ddd4f90d3164e53c62aa,
         type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    - target: {fileID: 8444144465335243334, guid: a90be014a329ddd4f90d3164e53c62aa,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    - target: {fileID: 8444144465335243334, guid: a90be014a329ddd4f90d3164e53c62aa,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    - target: {fileID: 8444144465335243334, guid: a90be014a329ddd4f90d3164e53c62aa,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    - target: {fileID: 8444144465335243334, guid: a90be014a329ddd4f90d3164e53c62aa,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6194698717283432532, guid: 30495fee3865e204aa4733cca2aa9f9f,
+    - target: {fileID: 8444144465335243334, guid: a90be014a329ddd4f90d3164e53c62aa,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7263296620925034519, guid: 30495fee3865e204aa4733cca2aa9f9f,
-        type: 3}
-      propertyPath: bondPrefab
-      value: 
-      objectReference: {fileID: 313772874980476013, guid: 9a959149ec033694f9d56bdd1b773432,
-        type: 3}
-    - target: {fileID: 9120231361073334636, guid: 30495fee3865e204aa4733cca2aa9f9f,
-        type: 3}
-      propertyPath: m_Name
-      value: BondManager
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 30495fee3865e204aa4733cca2aa9f9f, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: a90be014a329ddd4f90d3164e53c62aa, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 143570974}
   - {fileID: 596064864}
-  - {fileID: 214028255}
+  - {fileID: 642473516}
   - {fileID: 275979145}
