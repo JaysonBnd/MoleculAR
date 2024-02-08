@@ -28,10 +28,17 @@ public class MoleculeFactory : MonoBehaviour
 
     private Transform lowerAtom;
 
+    public Transform higherParent;
+
     void Start()
     {
+        if (higherParent == null)
+        {
+            this.higherParent = this.transform;
+        }
+
         this.bondsManager.InitializeBond();
-        
+
         // A correct website page.
         if (this.isIntancied)
         {
@@ -191,14 +198,14 @@ public class MoleculeFactory : MonoBehaviour
 
             var distance_to_atom = Vector3.Distance(this.transform.position, atomObject.transform.position);
 
-            if (distance_to_atom> farest_atom)
+            if (distance_to_atom > farest_atom)
             {
                 farest_atom = distance_to_atom;
-                atom_scale =  atomObject.scale;
+                atom_scale = atomObject.scale;
             }
         }
-        var sphereCollider =         this.GetComponent<SphereCollider>();
-        sphereCollider.radius = farest_atom;
+        var sphereCollider = this.GetComponent<SphereCollider>();
+        sphereCollider.radius = farest_atom + atom_scale;
 
         var tmpPosition = this.transform.localPosition;
         tmpPosition.y -= lowerYPoint;
@@ -217,7 +224,7 @@ public class MoleculeFactory : MonoBehaviour
             Color secondColor = secondAtom.color;
 
             this.bondsManager.AddBond(startPos, endPos, firstColor, secondColor, bond.order, $"{firstAtom.symbol}_{secondAtom.symbol}");
-            this.bondsManager.SetHigherParent(this.transform);
+            this.bondsManager.SetHigherParent(this.higherParent);
         }
     }
 

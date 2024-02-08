@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.XR.Interaction.Toolkit.Utilities;
@@ -196,13 +197,18 @@ public class MoleculeSpawner : MonoBehaviour
     private IEnumerator StartMoleculeFactoryCoroutine(GameObject interactibleMoleculeFactory, List<AtomItem> atomItemList, string uriMolecule)
     {
         var moleculeFactory = interactibleMoleculeFactory.GetComponentInChildren<MoleculeFactory>();
+        moleculeFactory.higherParent = interactibleMoleculeFactory.transform;
 
         yield return moleculeFactory.MoleculeGetRequest(atomItemList, uriMolecule);
         if (moleculeFactory.IsMoleculeIntanciate())
         {
             this.status = 2;
         }
-        moleculeFactory.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        else
+        {
+            this.status = 0;
+        }
+        interactibleMoleculeFactory.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
 
         yield return null;
     }

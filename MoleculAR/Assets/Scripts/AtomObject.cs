@@ -45,7 +45,7 @@ public class AtomObject : MonoBehaviour
     void LateUpdate()
     {
         var distanceToCamera = Vector3.Distance(this.transform.position, this.cam.transform.position);
-        
+        Debug.Log($"Atom{this.name}_distance_{distanceToCamera}");
         if (distanceToCamera < this.thresholdDistanceVisibility)
         {
             if (!this.atomCanva.enabled)
