@@ -27,6 +27,10 @@ public class UIScript : MonoBehaviour
         Scene scene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(scene.name);
     }
+    public void LoadMenuScene()
+    {
+        SceneManager.LoadScene(0);
+    }
 
     public void UpdateAPIUrl()
     {
