@@ -39,7 +39,6 @@ public class ElectronItem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(this.higherParent);
         if (this.higherParent != null)
         {
             this.transform.localScale = Vector3.one;

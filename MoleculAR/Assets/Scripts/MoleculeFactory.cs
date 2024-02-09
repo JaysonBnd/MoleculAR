@@ -5,7 +5,6 @@ using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Networking;
-using static UnityEngine.Rendering.DebugUI;
 
 public class MoleculeFactory : MonoBehaviour
 {
@@ -77,6 +76,8 @@ public class MoleculeFactory : MonoBehaviour
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(this.uriAtom))
         {
+            webRequest.SetRequestHeader("bypass-tunnel-reminder", "true");
+            webRequest.SetRequestHeader("User-Agent", $"MoleculAR for {SystemInfo.operatingSystem}");
             // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
@@ -141,7 +142,6 @@ public class MoleculeFactory : MonoBehaviour
         //uri_molecule = $"{this.GetIP()}";
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uriMolecule))
         {
-            Debug.Log("I'm here in Molecule Factory !");
             // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
@@ -176,6 +176,15 @@ public class MoleculeFactory : MonoBehaviour
         var farest_atom = 0.0f;
         var atom_scale = 0.0f;
 
+        var totalPosition = Vector3.zero;
+        foreach (MoleculeAtom atom in molecule.atomsList)
+        {
+            totalPosition += atom.position;
+        }
+
+        var centerDelta = totalPosition / molecule.atomsList.Count;
+        Debug.Log($"Molecule Center Delta {centerDelta}");
+
         for (int i = 0; i < molecule.atomsList.Count; i++)
         {
             MoleculeAtom atom = molecule.atomsList[i];
@@ -187,11 +196,11 @@ public class MoleculeFactory : MonoBehaviour
             }
 
             AtomObject atomObject = GameObject.Instantiate(atomPrefab, this.transform);
-
-            atomObject.SetData(Camera.main, atomData.Symbol, atom.position, atomData.Scale, atomData.Color);
-            if (atomObject.transform.position.y < lowerYPoint)
+            Debug.Log(atom.position);
+            atomObject.SetData(Camera.main, atomData.Symbol, atom.position - centerDelta, atomData.Scale, atomData.Color);
+            if (atomObject.transform.localPosition.y - atomObject.transform.localScale.y < lowerYPoint)
             {
-                lowerYPoint = atomObject.transform.position.y;
+                lowerYPoint = atomObject.transform.localPosition.y - atomObject.transform.localScale.y;
                 this.lowerAtom = atomObject.transform;
             }
             this.objectAtomsList.Add(atomObject);
@@ -205,7 +214,7 @@ public class MoleculeFactory : MonoBehaviour
             }
         }
         var sphereCollider = this.GetComponent<SphereCollider>();
-        sphereCollider.radius = farest_atom + atom_scale;
+        sphereCollider.radius = farest_atom;
 
         var tmpPosition = this.transform.localPosition;
         tmpPosition.y -= lowerYPoint;
@@ -235,10 +244,9 @@ public class MoleculeFactory : MonoBehaviour
         float newScale = (this.transform.localScale.x + this.transform.localScale.y + this.transform.localScale.z) / 3;
         if (this.lastScale != (this.transform.localScale.x + this.transform.localScale.y + this.transform.localScale.z) / 3)
         {
+            this.bondsManager.UpdateBondWidthMultiplier(newScale);
             this.lastScale = newScale;
-
-            this.bondsManager.UpdateBondWidthMultiplier(this.lastScale);
-
         }
+
     }
 }

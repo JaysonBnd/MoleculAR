@@ -45,9 +45,8 @@ public class MoleculeSpawner : MonoBehaviour
     /// <seealso cref="TrySpawnObject"/>
     public event Action<GameObject> ObjectSpawned;
 
-
-    private int status = 0;
-
+    private int status = -1;
+    private string errorMessage = "";
     /// <summary>
     /// See <see cref="MonoBehaviour"/>.
     /// </summary>
@@ -77,6 +76,7 @@ public class MoleculeSpawner : MonoBehaviour
 
     public void SetNewUrl(string url)
     {
+        this.status = -1;
         StartCoroutine(this.AtomGetRequest(url));
     }
 
@@ -84,6 +84,12 @@ public class MoleculeSpawner : MonoBehaviour
     {
         return this.status;
     }
+
+    public string GetErrorMessage()
+    {
+        return this.errorMessage;
+    }
+
     public void SetStatus(int status)
     {
         this.status = status;
@@ -112,9 +118,12 @@ public class MoleculeSpawner : MonoBehaviour
     IEnumerator AtomGetRequest(string url)
     {
         var atomUri = $"{url}/{this.atomPathUrl}";
+        this.errorMessage = "";
 
         using (UnityWebRequest webRequest = UnityWebRequest.Get(atomUri))
         {
+            webRequest.SetRequestHeader("bypass-tunnel-reminder", "true");
+            webRequest.SetRequestHeader("User-Agent", $"MoleculAR for {SystemInfo.operatingSystem}");
             // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
@@ -126,16 +135,19 @@ public class MoleculeSpawner : MonoBehaviour
                 case UnityWebRequest.Result.ConnectionError:
                 case UnityWebRequest.Result.DataProcessingError:
                     Debug.LogError(pages[page] + ": Error: " + webRequest.error);
+                    this.errorMessage = $"{webRequest.error}";
                     break;
                 case UnityWebRequest.Result.ProtocolError:
                     Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
+                    this.errorMessage = $"{webRequest.error}";
                     break;
                 case UnityWebRequest.Result.Success:
                     // A correct website page.
                     //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     this.atomList = this.JsonToAtomsItem(webRequest.downloadHandler.text);
+                    this.errorMessage = "";
                     this.apiUrl = url;
-
+                    this.status = 0;
                     break;
             }
         }
@@ -168,6 +180,7 @@ public class MoleculeSpawner : MonoBehaviour
 
         if (pathToFetch.Length == 0)
         {
+            this.errorMessage = "Pas d'url d'API de données.";
             this.status = 0;
             return false;
         }
@@ -202,10 +215,12 @@ public class MoleculeSpawner : MonoBehaviour
         yield return moleculeFactory.MoleculeGetRequest(atomItemList, uriMolecule);
         if (moleculeFactory.IsMoleculeIntanciate())
         {
+            this.errorMessage = "";
             this.status = 2;
         }
         else
         {
+            this.errorMessage = "Impossible de construire la molécule";
             this.status = 0;
         }
         interactibleMoleculeFactory.transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);

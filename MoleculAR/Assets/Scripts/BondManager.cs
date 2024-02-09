@@ -52,8 +52,6 @@ public class BondManager : MonoBehaviour
 
             bond.transform.localPosition = bondPosition;
 
-            Debug.Log($"{bond.name} - {localEmptyObjectLocationY}");
-
             bond.SetColor(startColor, endColor);
 
             tmpBonds.Add(bond);

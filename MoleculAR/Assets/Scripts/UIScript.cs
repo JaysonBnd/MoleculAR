@@ -16,6 +16,8 @@ public class UIScript : MonoBehaviour
 
     public TMP_InputField urlTextInput;
 
+    public TextMeshProUGUI errorMessageText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -53,18 +55,42 @@ public class UIScript : MonoBehaviour
             case -1:
                 this.openButton.gameObject.SetActive(false);
                 this.deleteButton.gameObject.SetActive(false);
+                if (this.moleculeSpawner.GetErrorMessage().Length > 0)
+                {
+                    this.errorMessageText.gameObject.SetActive(true);
+                    this.errorMessageText.SetText(this.moleculeSpawner.GetErrorMessage());
+                }
+                else
+                {
+                    this.errorMessageText.SetText("");
+                    this.errorMessageText.gameObject.SetActive(false);
+                }
                 break;
             case 0:
                 this.openButton.gameObject.SetActive(true);
                 this.deleteButton.gameObject.SetActive(false);
+                if (this.moleculeSpawner.GetErrorMessage().Length > 0)
+                {
+                    this.errorMessageText.gameObject.SetActive(true);
+                    this.errorMessageText.SetText(this.moleculeSpawner.GetErrorMessage());
+                }
+                else
+                {
+                    this.errorMessageText.SetText("");
+                    this.errorMessageText.gameObject.SetActive(false);
+                }
                 break;
             case 1:
                 this.openButton.gameObject.SetActive(false);
                 this.deleteButton.gameObject.SetActive(false);
+                this.errorMessageText.SetText("");
+                this.errorMessageText.gameObject.SetActive(false);
                 break;
             case 2:
                 this.openButton.gameObject.SetActive(false);
                 this.deleteButton.gameObject.SetActive(true);
+                this.errorMessageText.SetText("");
+                this.errorMessageText.gameObject.SetActive(false);
                 break;
         }
     }
