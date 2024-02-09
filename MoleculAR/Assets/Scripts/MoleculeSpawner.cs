@@ -32,7 +32,7 @@ public class MoleculeSpawner : MonoBehaviour
     [Tooltip("The size, in viewport units, of the periphery inside the viewport that will not be considered in view.")]
     public float viewportPeriphery = 0.15f;
 
-    public string apiUrl = "http://localhost:5000";
+    public string apiUrl = "https://epitech-vir-tunnel.loca.lt";
     private string atomPathUrl = "api/atom";
     private string moleculePathUrl = "api/molecule";
 
@@ -83,6 +83,16 @@ public class MoleculeSpawner : MonoBehaviour
     public int GetStatus()
     {
         return this.status;
+    }
+
+    public string GetAtomPathUrl()
+    {
+        return $"{this.apiUrl}/{this.atomPathUrl}";
+    }
+
+    public string GetMoleculePathUrl()
+    {
+        return $"{this.apiUrl}/{this.moleculePathUrl}";
     }
 
     public string GetErrorMessage()
