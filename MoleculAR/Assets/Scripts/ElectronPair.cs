@@ -26,6 +26,12 @@ public class ElectronPair : MonoBehaviour
     {
     }
 
+    public void SetElectronHigherParent(Transform parent)
+    {
+        this.electronStart.SetHigherParent(parent);
+        this.electronEnd.SetHigherParent(parent);
+    }
+
     public void SetColor(Color colorStart, Color colorEnd)
     {
         this.colorStart = colorStart;

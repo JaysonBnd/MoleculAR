@@ -15,7 +15,8 @@ public class AtomObject : MonoBehaviour
 
     public string symbol = "";
     public Color color = Color.white;
- 
+    public float scale = 1.0f;
+
 
     // Start is called before the first frame update
     void Start()
@@ -32,8 +33,9 @@ public class AtomObject : MonoBehaviour
         this.atomSymbol.text = this.symbol;
         this.name = $"Atom_{symbol}";
 
-        this.transform.position = position;
+        this.transform.localPosition= position;
         this.transform.localScale = new Vector3(scale, scale, scale);
+        this.scale = scale;
 
         var renderer = this.GetComponent<Renderer>();
         renderer.material.color = this.color;
@@ -43,7 +45,6 @@ public class AtomObject : MonoBehaviour
     void LateUpdate()
     {
         var distanceToCamera = Vector3.Distance(this.transform.position, this.cam.transform.position);
-        
         if (distanceToCamera < this.thresholdDistanceVisibility)
         {
             if (!this.atomCanva.enabled)

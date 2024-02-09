@@ -50,8 +50,8 @@ MonoBehaviour:
   electronEnd: {fileID: 2325865379607401154}
   movementSpeed: 1
   rotationSpeed: 50
-  thresholdDistanceVisibility: 10
-  thresholdDistanceOpacity: 5
+  thresholdDistanceVisibility: 1
+  thresholdDistanceOpacity: 0.5
 --- !u!1 &2489549976408887961
 GameObject:
   m_ObjectHideFlags: 0
