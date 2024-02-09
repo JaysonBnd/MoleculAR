@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class MoleculeScrollView : MenuScrollView
+public class MoleculeScrollView : MenuScrollView<MoleculeButton>
 {
     private string moleculeFamily = "";
-    protected new List<MoleculeButton> buttonList = new List<MoleculeButton>();
     private Dictionary<string, Sprite> moleculeImageDictionnary = new Dictionary<string, Sprite>();
     private Coroutine moleculeByFamilyCoroutine;
-
+    public Animator menuAnimator;
     // Start is called before the first frame update
     void Start()
     {
@@ -21,6 +20,7 @@ public class MoleculeScrollView : MenuScrollView
     {
         if (this.moleculeFamily != moleculeFamily)
         {
+            this.moleculeFamily = moleculeFamily;
             if (moleculeByFamilyCoroutine != null)
             {
                 StopCoroutine(this.moleculeByFamilyCoroutine);
@@ -36,7 +36,7 @@ public class MoleculeScrollView : MenuScrollView
 
     IEnumerator MoleculeByFamilyGetRequest(string moleculeFamily)
     {
-        var moleculeFamilyUri = $"{this.moleculeSpawner.apiUrl}/{this.moleculeSpawner.GetMoleculePathUrl()}/{moleculeFamily}";
+        var moleculeFamilyUri = $"{this.moleculeSpawner.GetMoleculePathUrl()}/{moleculeFamily}";
 
         using (UnityWebRequest webRequest = UnityWebRequest.Get(moleculeFamilyUri))
         {
@@ -58,18 +58,26 @@ public class MoleculeScrollView : MenuScrollView
                     Debug.LogError(pages[page] + ": HTTP Error: " + webRequest.error);
                     break;
                 case UnityWebRequest.Result.Success:
-                    var moleculeDictionnary = JsonUtility.FromJson<Dictionary<string, Dictionary<string, string>>>(webRequest.downloadHandler.text);
+                    var moleculeDictionnary = JsonUtility.FromJson<MoleculeListJson>(webRequest.downloadHandler.text);
                     this.moleculeFamily = moleculeFamily;
-                    // A correct website page.
-                    //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
-                    // this.atomList = this.JsonToAtomsItem(webRequest.downloadHandler.text);
+                    CreateButtons(moleculeDictionnary);
+                    yield return GetMoleculeImage(moleculeFamily, this.buttonList);
                     break;
             }
         }
     }
 
-    public void CreateButtons() { }
-
+    public void CreateButtons(MoleculeListJson familyDictionnary)
+    {
+        int i = 0;
+        foreach (var familyData in familyDictionnary.molecules)
+        {
+            var button = Instantiate(this.scrollViewButtonPrefab, this.content.transform);
+            button.SetButtonData(this, i, familyData.name, familyData.path);
+            this.buttonList.Add(button);
+            i += 1;
+        }
+    }
     IEnumerator GetMoleculeImage(string moleculeFamily, List<MoleculeButton> buttonList)
     {
         foreach (var button in buttonList)
@@ -90,7 +98,7 @@ public class MoleculeScrollView : MenuScrollView
 
     IEnumerator MoleculeImageGetRequest(string moleculePath)
     {
-        var moleculeImageUri = $"{this.moleculeSpawner.apiUrl}/{this.moleculeSpawner.GetMoleculePathUrl()}/{moleculePath}/image";
+        var moleculeImageUri = $"{this.moleculeSpawner.GetMoleculePathUrl()}/{moleculePath}/image";
 
         using (UnityWebRequest webRequest = UnityWebRequestTexture.GetTexture(moleculeImageUri))
         {
@@ -141,7 +149,8 @@ public class MoleculeScrollView : MenuScrollView
 
     protected override void DoSelectedButtonAction(int buttonSelectedId, string elementId)
     {
-
+        this.moleculeSpawner.pathToFetch = $"{this.moleculeFamily}/{elementId}";
+        this.menuAnimator.Play("CloseMoleculeMenu");
     }
 
     // Update is called once per frame

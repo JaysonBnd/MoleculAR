@@ -11,6 +11,8 @@ public class UIScript : MonoBehaviour
     public Button openButton;
     public Button deleteButton;
     public Button optionButton;
+    public FamilyScrollView familyScrollView;
+    public MoleculeScrollView moleculeScrollView;
 
     public MoleculeSpawner moleculeSpawner;
 
@@ -36,7 +38,10 @@ public class UIScript : MonoBehaviour
 
     public void UpdateAPIUrl()
     {
-        moleculeSpawner.SetNewUrl(this.urlTextInput.text);
+        this.moleculeSpawner.SetNewUrl(this.urlTextInput.text);
+        this.moleculeScrollView.ClearScrollView();
+        this.familyScrollView.ClearScrollView();
+        StartCoroutine(this.familyScrollView.FamilyGetRequest());
     }
 
     public void ClearAllObjects()

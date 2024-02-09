@@ -1,12 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+public delegate void MenuScrollViewCallback(int buttonSelectedId, string elementId);
+
 public class ScrollViewButton : MonoBehaviour
 {
     public TextMeshProUGUI buttonText;
-    private MenuScrollView menuScrollView;
+    private MenuScrollViewCallback menuScrollViewCallback;
     private int buttonIndex = -1;
     private string elementName = "";
     private string elementId = "";
@@ -17,9 +20,9 @@ public class ScrollViewButton : MonoBehaviour
 
     }
 
-    public void SetButtonData(MenuScrollView menuScrollView, int buttonIndex, string elementName, string elementId)
+    public void SetButtonData<T>(MenuScrollView<T> menuScrollView, int buttonIndex, string elementName, string elementId) where T : ScrollViewButton
     {
-        this.menuScrollView = menuScrollView;
+        this.menuScrollViewCallback = menuScrollView.SelectedButtonUpdate;
         this.buttonIndex = buttonIndex;
         this.buttonText.SetText(elementName);
         this.elementName = elementName;
@@ -28,9 +31,9 @@ public class ScrollViewButton : MonoBehaviour
 
     public void ButtonPressed()
     {
-        if (this.menuScrollView != null)
+        if (this.menuScrollViewCallback != null)
         {
-            this.menuScrollView.SelectedButtonUpdate(this.buttonIndex, this.elementId);
+            this.menuScrollViewCallback(this.buttonIndex, this.elementId);
         }
     }
 

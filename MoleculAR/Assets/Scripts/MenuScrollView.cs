@@ -3,20 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class MenuScrollView : MonoBehaviour
+public abstract class MenuScrollView<T>: MonoBehaviour where T: ScrollViewButton
 {
     public MoleculeSpawner moleculeSpawner;
-    protected List<ScrollViewButton> buttonList = new List<ScrollViewButton>();
-    public ScrollViewButton scrollViewButtonPrefab;
-    private Color baseButtonColor;
-    private Color selectedButtonColor = new Color(0.5f, 0.5f, 0.5f);
+    protected List<T> buttonList = new List<T>();
+    public T scrollViewButtonPrefab;
+    public GameObject content;
+    private Color baseButtonColor = new Color(0.9f, 0.9f, 0.9f);
+    private Color selectedButtonColor = new Color(0.7f, 0.7f, 0.7f);
 
     // Start is called before the first frame update
     void Start()
     {
-        var imageRenderer = this.scrollViewButtonPrefab.GetComponent<Image>();
-
-        this.baseButtonColor = imageRenderer.color;
     }
 
     public void SelectedButtonUpdate(int buttonSelectedId, string elementId)
@@ -25,6 +23,7 @@ public abstract class MenuScrollView : MonoBehaviour
         {
             ScrollViewButton button = this.buttonList[i];
             Image buttonImage = button.GetComponent<Image>();
+
             if (i == buttonSelectedId)
             {
                 buttonImage.color = this.selectedButtonColor;
@@ -39,8 +38,9 @@ public abstract class MenuScrollView : MonoBehaviour
 
     protected abstract void DoSelectedButtonAction(int buttonSelectedId, string elementId);
 
-    protected void ClearScrollView()
+    public void ClearScrollView()
     {
+        Debug.Log("TAMERE");
         foreach (var button in this.buttonList)
         {
             Destroy(button.gameObject);

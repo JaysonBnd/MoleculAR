@@ -76,6 +76,7 @@ public class MoleculeSpawner : MonoBehaviour
 
     public void SetNewUrl(string url)
     {
+        this.apiUrl = url;
         this.status = -1;
         StartCoroutine(this.AtomGetRequest(url));
     }
@@ -156,7 +157,6 @@ public class MoleculeSpawner : MonoBehaviour
                     //Debug.Log(pages[page] + ":\nReceived: " + webRequest.downloadHandler.text);
                     this.atomList = this.JsonToAtomsItem(webRequest.downloadHandler.text);
                     this.errorMessage = "";
-                    this.apiUrl = url;
                     this.status = 0;
                     break;
             }
