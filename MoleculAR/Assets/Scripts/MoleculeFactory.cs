@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Networking;
 
 public class MoleculeFactory : MonoBehaviour
@@ -11,7 +13,7 @@ public class MoleculeFactory : MonoBehaviour
     // Start is called before the first frame update
     private List<AtomObject> objectAtomsList = new List<AtomObject>();
     public BondManager bondsManager;
-    private string uriAtom = "http://localhost:5000/api/atom";
+    private string uriAtom = "https://epitech-vir-tunnel.loca.lt/api/atom";
 
     private float lastScale = 1.0f;
 
@@ -28,6 +30,12 @@ public class MoleculeFactory : MonoBehaviour
     private Transform lowerAtom;
 
     public Transform higherParent;
+    private UnityEngine.InputSystem.Gyroscope gyro;
+
+    private float distanceToSpin = 2.0f;
+    private List<Vector3> vectorList = new List<Vector3>();
+    private float higherDistance = 0.0f;
+    private float rotationInertia = 0.0f;
 
     void Start()
     {
@@ -37,6 +45,14 @@ public class MoleculeFactory : MonoBehaviour
         }
 
         this.bondsManager.InitializeBond();
+
+
+        if (SystemInfo.supportsGyroscope)
+        {
+            this.gyro = UnityEngine.InputSystem.Gyroscope.current;
+            InputSystem.EnableDevice(gyro);
+            this.gyro.samplingFrequency = 1.0f / 15.0f;
+        }
 
         // A correct website page.
         if (this.isIntancied)
@@ -98,7 +114,6 @@ public class MoleculeFactory : MonoBehaviour
                     this.atomList = this.JsonToAtomsItem(webRequest.downloadHandler.text);
 
                     // A correct website page.
-                    StartCoroutine(this.MoleculeGetRequest(this.atomList, this.urlToGet));
                     break;
             }
         }
@@ -142,6 +157,8 @@ public class MoleculeFactory : MonoBehaviour
         //uri_molecule = $"{this.GetIP()}";
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uriMolecule))
         {
+            webRequest.SetRequestHeader("bypass-tunnel-reminder", "true");
+            webRequest.SetRequestHeader("User-Agent", $"MoleculAR for {SystemInfo.operatingSystem}");
             // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
 
@@ -248,5 +265,36 @@ public class MoleculeFactory : MonoBehaviour
             this.lastScale = newScale;
         }
 
+        if (this.gyro != null)
+        {
+            var velocity = this.gyro.angularVelocity.ReadValue();
+
+            foreach (var vector in this.vectorList)
+            {
+                var distance = Vector3.Distance(velocity, vector);
+
+                if (distance > this.distanceToSpin)
+                {
+                    this.rotationInertia = 360.0f * 3;
+                }
+
+                if (distance > this.higherDistance)
+                {
+                    this.higherDistance = distance;
+                }
+            }
+            this.vectorList.Add(velocity);
+
+            if (this.vectorList.Count > 15) {
+                this.vectorList.RemoveAt(0);
+            }
+        }
+
+        var calcul = this.rotationInertia * 0.6f * Time.deltaTime;
+        this.transform.Rotate(Vector3.up, calcul * 1.5f);
+        this.rotationInertia -= calcul;
+        if (calcul < 2.5f) {
+            this.rotationInertia = 0.0f;
+        }
     }
 }
