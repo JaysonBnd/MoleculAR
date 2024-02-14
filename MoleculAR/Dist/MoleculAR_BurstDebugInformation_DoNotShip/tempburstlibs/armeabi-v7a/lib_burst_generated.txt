@@ -12,6 +12,7 @@ Library: C:\Users\83jay\Documents\Repository\T-VIR-901-BDX_2\MoleculAR\Temp\Burs
 --assembly-defines=Assembly-CSharp;
 --assembly-defines=Mono.Security;
 --assembly-defines=mscorlib;
+--assembly-defines=Nobi.UiRoundedCorners;
 --assembly-defines=System.Configuration;
 --assembly-defines=System.Core;
 --assembly-defines=System;
@@ -57,6 +58,7 @@ Library: C:\Users\83jay\Documents\Repository\T-VIR-901-BDX_2\MoleculAR\Temp\Burs
 --assembly-defines=Assembly-CSharp;
 --assembly-defines=Mono.Security;
 --assembly-defines=mscorlib;
+--assembly-defines=Nobi.UiRoundedCorners;
 --assembly-defines=System.Configuration;
 --assembly-defines=System.Core;
 --assembly-defines=System;

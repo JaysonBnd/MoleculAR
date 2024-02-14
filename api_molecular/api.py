@@ -51,10 +51,7 @@ def get_family_data(family):
         url_path = os.path.splitext(file)[0]
         file_name = url_path.title().replace("_", ",")
 
-        if file_name not in molecule_dict["molecules"]:
-            with open(f"{os.path.join(dir_path, url_path)}.png", "r+b") as image_file:
-                encoded_image = base64.b64encode(image_file.read())
-
+        if {"path": url_path, "name": file_name} not in molecule_dict["molecules"]:
             molecule_dict["molecules"].append(
                 {
                     "path": url_path,

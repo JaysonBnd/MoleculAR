@@ -15,6 +15,11 @@ public class BondItem : MonoBehaviour
 
     // Update is called once per frame
 
+    public void SetElectronHigherParent(Transform parent)
+    {
+        this.electronPair.SetElectronHigherParent(parent);
+    }
+
     public void SetColor(Color startColor, Color endColor)
     {
         var rendererStart = bondStart.GetComponent<Renderer>();

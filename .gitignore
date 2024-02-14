@@ -70,3 +70,5 @@ crashlytics-build.properties
 # Temporary auto-generated Android Assets
 ./MoleculAR/[Aa]ssets/[Ss]treamingAssets/aa.meta
 ./MoleculAR/[Aa]ssets/[Ss]treamingAssets/aa/*
+
+/localtunnel/node_modules/
