@@ -14,4 +14,8 @@ public class Menu : MonoBehaviour
     {
         Application.Quit();
     }
+    public void OpenURL()
+    {
+        Application.OpenURL("https://docs.google.com/forms/d/e/1FAIpQLSdo_rlxjNvB6kj0A34kSLO-2n5OuhPeWMB-FHd0JSTQXTAMeQ/viewform?usp=sf_link");
+    }
 }
