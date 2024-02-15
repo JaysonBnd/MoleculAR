@@ -190,7 +190,7 @@ public class MoleculeSpawner : MonoBehaviour
 
         if (pathToFetch.Length == 0)
         {
-            this.errorMessage = "Pas d'url d'API de données.";
+            this.errorMessage = "Pas de Molécule sélectionné.";
             this.status = 0;
             return false;
         }
