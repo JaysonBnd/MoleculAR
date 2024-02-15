@@ -32,7 +32,7 @@ public class MoleculeFactory : MonoBehaviour
     public Transform higherParent;
     private UnityEngine.InputSystem.Gyroscope gyro;
 
-    private float distanceToSpin = 2.0f;
+    private float distanceToSpin = 4.0f;
     private List<Vector3> vectorList = new List<Vector3>();
     private float higherDistance = 0.0f;
     private float rotationInertia = 0.0f;
